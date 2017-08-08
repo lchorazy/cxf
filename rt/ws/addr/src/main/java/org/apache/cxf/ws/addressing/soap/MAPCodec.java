@@ -219,7 +219,6 @@ public class MAPCodec extends AbstractSoapInterceptor {
     private void encode(SoapMessage message,
                         AddressingProperties maps) {
         if (maps != null) {
-            cacheExchange(message, maps);
             LOG.log(Level.FINE, "Outbound WS-Addressing headers");
             try {
                 List<Header> header = message.getHeaders();
@@ -810,19 +809,6 @@ public class MAPCodec extends AbstractSoapInterceptor {
      */
     private SoapFault createSOAPFaut(String localName, String namespace, String reason) {
         return new SoapFault(reason, new QName(namespace, localName));
-    }
-
-    /**
-     * Cache exchange for correlated response
-     *
-     * @param message the current message
-     * @param maps the addressing properties
-     */
-    private void cacheExchange(SoapMessage message, AddressingProperties maps) {
-        if (ContextUtils.isRequestor(message) && !message.getExchange().isOneWay()) {
-            uncorrelatedExchanges.put(maps.getMessageID().getValue(),
-                                      message.getExchange());
-        }
     }
 
     /**
